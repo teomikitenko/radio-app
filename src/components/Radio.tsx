@@ -124,7 +124,7 @@ const RadioComponent = () => {
             <button
               key={genre}
               className="text-blue-700 border border-cyan-400 size-min py-1 px-2 rounded-2xl"
-              onClick={(t) => searchByGenreHandler(genre)}
+              onClick={() => searchByGenreHandler(genre)}
             >
               <p className="text-xs font-semibold text-nowrap">{genre}</p>
             </button>
