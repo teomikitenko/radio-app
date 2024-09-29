@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html{
+    min-height: 100%;
+}
+
+#thumb::-webkit-scrollbar {
+    width: 9px;
+  }
+
+
+  #thumb::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  /* Handle */
+  #thumb::-webkit-scrollbar-thumb {
+    background: gray;
+    height: 20px;
+    border-radius: 5px;
+  }
+
+
+
+
+
+
+
+
+
