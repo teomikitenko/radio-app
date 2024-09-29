@@ -6,7 +6,7 @@ import { Play } from "lucide-react";
 const RadioWave = ({ s }: { s: Station }) => {
   const waveCtx = useContext(RadioWaveContext);
   const handleClick = () => {
-    setUrl(s.urlResolved);
+   /*  setUrl(s.urlResolved); */
   };
   return (
     <div className="flex gap-3">

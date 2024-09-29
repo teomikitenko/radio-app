@@ -1,6 +1,5 @@
 import { useState, createContext, Dispatch, SetStateAction } from "react";
 import RadioComponent from "./components/Radio";
-import CanvasElement from "./components/CanvasElement";
 import BottomPlayer from "./components/BottomPlayer";
 import { Station } from "radio-browser-api";
 

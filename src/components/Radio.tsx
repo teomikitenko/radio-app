@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import COMMON_GENRE_LIST from "../constants/genre";
 import COMMON_COUNTRY_LIST from "../constants/country";
 import { Station } from "radio-browser-api";
@@ -13,12 +13,9 @@ import { RadioWaveContext } from "../App";
 
 const RadioComponent = () => {
   const [radioStations, setRadioStations] = useState<Station[] | undefined>();
-  const [stationName, setStationName] = useState<
-    HTMLInputElement["value"] | undefined
-  >();
+
   const [audioContext, setAudioContext] = useState<AudioContext | undefined>();
   const [value, setValue] = useState<string>(" ");
-  const [url, setUrl] = useState<string | undefined>(undefined);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -53,7 +50,7 @@ const RadioComponent = () => {
       const ctx = canvasRef.current!.getContext("2d");
 
       let audioSource = null;
-      let analyser = null;
+      let analyser:any = null;
 
       audioSource = audioCtx.createMediaElementSource(audioRef.current!);
       analyser = audioCtx.createAnalyser();
@@ -97,7 +94,7 @@ const RadioComponent = () => {
 
   useEffect(() => {
     if (radioStations?.length! > 0) {
-      audioRef.current!.addEventListener("canplaythrough", (event) => {
+      audioRef.current!.addEventListener("canplaythrough", () => {
         audioRef.current!.play();
         audioContext!.resume();
       });
