@@ -1,10 +1,10 @@
-import React, { useEffect, useContext } from "react";
-import { RadioWaveContext } from "../App";
+/* import React, { useEffect, useContext } from "react";
+import { RadioWaveContext } from "../App"; */
 import type { Station } from "radio-browser-api";
 import { Play } from "lucide-react";
 
 const RadioWave = ({ s }: { s: Station }) => {
-  const waveCtx = useContext(RadioWaveContext);
+  //const waveCtx = useContext(RadioWaveContext);
   const handleClick = () => {
    /*  setUrl(s.urlResolved); */
   };

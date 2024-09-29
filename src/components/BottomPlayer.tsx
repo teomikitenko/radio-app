@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { RadioWaveContext } from "../App";
 import { Play, StepBack, StepForward } from "lucide-react";
 
