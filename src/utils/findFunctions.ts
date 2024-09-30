@@ -1,4 +1,10 @@
+import { Station } from "radio-browser-api";
 import radio_api from "../lib/radioApi";
+
+
+ const filtered = (stations:Station[])=>{
+  return stations.filter(s=>s.country !== 'The Russian Federation' )
+} 
 
 const searchTopStations = async()=>{
   const stations = await radio_api.searchStations({
@@ -8,7 +14,7 @@ const searchTopStations = async()=>{
     hideBroken: true,
     removeDuplicates: true,
   });
-  return stations;
+  return filtered(stations);
 }
 const searchByCountry = async (country:string) => {
   const stations = await radio_api.searchStations({
@@ -18,20 +24,19 @@ const searchByCountry = async (country:string) => {
     hideBroken: true,
     removeDuplicates: true,
   });
-  return stations;
+  return filtered(stations);
 };
 
 
 const searchByName = async (name: string) => {
   const stations = await radio_api.searchStations({
-    country:'UA',
     order: 'name',
     name: name,
     limit: 10,
     hideBroken: true,
     removeDuplicates: true,
   });
-  return stations;
+  return filtered(stations);
 };
 
 const searchByGenre = async (t: string) => {
@@ -43,7 +48,7 @@ const searchByGenre = async (t: string) => {
     hideBroken: true,
     removeDuplicates: true,
   });
-  return stations;
+  return filtered(stations);
 };
 
 export { searchByName, searchByGenre,searchTopStations,searchByCountry };

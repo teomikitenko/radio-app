@@ -1,12 +1,24 @@
-/* import React, { useEffect, useContext } from "react";
-import { RadioWaveContext } from "../App"; */
+import { useContext } from "react";
+import { RadioWaveContext } from "../App";
 import type { Station } from "radio-browser-api";
 import { Play } from "lucide-react";
 
 const RadioWave = ({ s }: { s: Station }) => {
-  //const waveCtx = useContext(RadioWaveContext);
+  const waveCtx = useContext(RadioWaveContext);
+  const playProps =
+    waveCtx?.stations![waveCtx.waveIndex].id === s.id
+      ? {
+          fill: "red",
+          color: "red",
+        }
+      : {
+          color: "#9ca3af",
+          fill: "none",
+        };
   const handleClick = () => {
-   /*  setUrl(s.urlResolved); */
+    const currentIndexStation = waveCtx?.stations?.indexOf(s);
+    waveCtx?.setWaveIndex(currentIndexStation!);
+    waveCtx?.setPlayState(true);
   };
   return (
     <div className="flex gap-3">
@@ -16,12 +28,12 @@ const RadioWave = ({ s }: { s: Station }) => {
         </div>
         <div className="flex gap-2">
           <p>{s.country}</p>
-          {s.tags.map((t, index) => index < 3 && <p>{t}</p>)}
+          {s.tags.map((t, index) => index < 3 && <p key={t}>{t}</p>)}
         </div>
       </div>
       <Play
         width={30}
-        color="#9ca3af"
+        {...playProps}
         absoluteStrokeWidth
         strokeWidth={1}
         onClick={handleClick}

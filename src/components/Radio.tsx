@@ -7,7 +7,7 @@ import {
   searchByName,
   searchByGenre,
   searchTopStations,
-  searchByCountry
+  searchByCountry,
 } from "../utils/findFunctions";
 import { RadioWaveContext } from "../App";
 
@@ -17,8 +17,6 @@ const RadioComponent = () => {
   const [audioContext, setAudioContext] = useState<AudioContext | undefined>();
   const [value, setValue] = useState<string>(" ");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const waveCtx = useContext(RadioWaveContext);
 
   const searchByGenreHandler = async (genre: string) => {
@@ -35,24 +33,23 @@ const RadioComponent = () => {
     setRadioStations(stations);
     waveCtx!.setStations(stations);
   };
-  const searchByCountryHandler=async(country:string)=>{
-    const stations = await searchByCountry(country)
+  const searchByCountryHandler = async (country: string) => {
+    const stations = await searchByCountry(country);
     setRadioStations(stations);
     waveCtx!.setStations(stations);
-
-  }
+  };
 
   useEffect(() => {
-    if (canvasRef.current && audioRef.current) {
+    if (canvasRef.current && waveCtx?.audioRef) {
       const audioCtx = new window.AudioContext(); // create customHook and add functions on util folder
       setAudioContext(audioCtx);
 
       const ctx = canvasRef.current!.getContext("2d");
 
       let audioSource = null;
-      let analyser:any = null;
+      let analyser: any = null;
 
-      audioSource = audioCtx.createMediaElementSource(audioRef.current!);
+      audioSource = audioCtx.createMediaElementSource(waveCtx.audioRef);
       analyser = audioCtx.createAnalyser();
       audioSource.connect(analyser);
       analyser.connect(audioCtx.destination);
@@ -89,17 +86,30 @@ const RadioComponent = () => {
       }
       animate();
     }
-    searchTopStations().then((res) => setRadioStations(res));
-  }, []);
+    searchTopStations().then((res) => {
+      setRadioStations(res);
+      waveCtx?.setStations(res);
+    });
+  }, [waveCtx?.audioRef]);
 
   useEffect(() => {
-    if (radioStations?.length! > 0) {
-      audioRef.current!.addEventListener("canplaythrough", () => {
-        audioRef.current!.play();
-        audioContext!.resume();
-      });
+    const audio = waveCtx?.audioRef;
+    const playHandler = () => {
+      audio?.play();
+      audioContext!.resume();
+    };
+
+    if (audio && waveCtx?.playState && radioStations?.length! > 0) {
+      document.body.addEventListener("click", playHandler);
+      //audio.volume = waveCtx.volume
     }
-  }, [radioStations]);
+
+    return () => {
+      audio?.pause();
+      document.body.removeEventListener("click", playHandler);
+    };
+  }, [radioStations, waveCtx?.playState]);
+
   return (
     <div className="relative  mt-32 flex flex-col gap-2">
       <div className="mx-auto z-40 flex flex-col gap-2 px-5 py-3 ">
@@ -107,7 +117,7 @@ const RadioComponent = () => {
           <form className="w-full" onSubmit={searchByNameHandler}>
             <div className="flex gap-2">
               <input
-                className="border grow rounded-xl"
+                className="border grow rounded-xl p-3"
                 name="name"
                 type="text"
                 value={value}
@@ -129,7 +139,7 @@ const RadioComponent = () => {
               <p className="text-xs font-semibold text-nowrap">{genre}</p>
             </button>
           ))}
-            {COMMON_COUNTRY_LIST.map((c) => (
+          {COMMON_COUNTRY_LIST.map((c) => (
             <button
               key={c}
               className="text-blue-700 border border-cyan-400 size-min py-1 px-2 rounded-2xl"
@@ -140,15 +150,16 @@ const RadioComponent = () => {
           ))}
         </div>
 
-        <audio
+        {/*      <audio
           ref={audioRef}
+          
           src={
             radioStations?.length
               ? radioStations![waveCtx!.waveIndex].urlResolved
               : undefined
           }
           crossOrigin="anonymous"
-        ></audio>
+        ></audio> */}
       </div>
 
       <canvas
@@ -159,7 +170,7 @@ const RadioComponent = () => {
         id="thumb"
         className="w-[50%] mx-auto flex flex-col gap-3 z-20 scroll-smooth max-h-72  p-5 overflow-y-scroll "
       >
-        {radioStations && canvasRef.current && audioRef.current ? (
+        {radioStations && canvasRef.current && waveCtx?.audioRef ? (
           radioStations!.map((s) => <RadioWave key={s.id} s={s} />)
         ) : (
           <p>Chose genre</p>
