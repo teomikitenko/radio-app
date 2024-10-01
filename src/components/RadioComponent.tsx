@@ -6,7 +6,6 @@ import RadioWave from "./RadioWave";
 import {
   searchByName,
   searchByGenre,
-  searchTopStations,
   searchByCountry,
 } from "../utils/findFunctions";
 import { RadioWaveContext } from "./ProviderRadio";
@@ -15,14 +14,13 @@ import useVisualAudio from "../hooks/useVisualAudio";
 const RadioComponent = () => {
   const [radioStations, setRadioStations] = useState<Station[] | undefined>();
 
-  //const [audioContext, setAudioContext] = useState<AudioContext | undefined>();
   const [value, setValue] = useState<string>(" ");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const waveCtx = useContext(RadioWaveContext);
-const {audioContext,setAudioContext} = useVisualAudio({
-  canvasRef,
-  setRadioStations
-})
+  const { audioContext } = useVisualAudio({
+    canvasRef,
+    setRadioStations,
+  });
 
   const searchByGenreHandler = async (genre: string) => {
     waveCtx?.setWaveIndex(undefined);
@@ -46,59 +44,6 @@ const {audioContext,setAudioContext} = useVisualAudio({
     setRadioStations(stations);
     waveCtx!.setStations(stations);
   };
-
- /*  useEffect(() => {
-    if (canvasRef.current && waveCtx?.audioRef) {
-      const audioCtx = new window.AudioContext(); // create customHook and add functions on util folder
-      setAudioContext(audioCtx);
-
-      const ctx = canvasRef.current!.getContext("2d");
-
-      let audioSource = null;
-      let analyser: any = null;
-
-      audioSource = audioCtx.createMediaElementSource(waveCtx.audioRef);
-      analyser = audioCtx.createAnalyser();
-      audioSource.connect(analyser);
-      analyser.connect(audioCtx.destination);
-      analyser.fftSize = 2048;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-      const barWidth = canvasRef.current!.width / bufferLength + 0.2;
-      let barHeight;
-
-      let x = 0;
-      function animate() {
-        x = 0;
-        ctx!.clearRect(
-          0,
-          0,
-          canvasRef.current!.width,
-          canvasRef.current!.height
-        );
-        if (analyser) {
-          analyser.getByteFrequencyData(dataArray);
-          for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] * 0.5;
-            ctx!.fillStyle = "#fef9c3";
-            ctx!.fillRect(
-              x,
-              canvasRef.current!.height - barHeight,
-              barWidth,
-              barHeight
-            );
-            x += barWidth;
-          }
-        }
-        requestAnimationFrame(animate);
-      }
-      animate();
-    }
-    searchTopStations().then((res) => {
-      setRadioStations(res);
-      waveCtx?.setStations(res);
-    });
-  }, [waveCtx?.audioRef]); */
 
   useEffect(() => {
     const audio = waveCtx?.audioRef;
