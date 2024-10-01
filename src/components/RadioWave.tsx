@@ -1,12 +1,12 @@
 import { useContext } from "react";
-import { RadioWaveContext } from "../App";
+import { RadioWaveContext } from "../components/ProviderRadio";
 import type { Station } from "radio-browser-api";
 import { Play } from "lucide-react";
 
 const RadioWave = ({ s }: { s: Station }) => {
   const waveCtx = useContext(RadioWaveContext);
   const playProps =
-    waveCtx?.stations![waveCtx.waveIndex].id === s.id
+    typeof waveCtx?.waveIndex === 'number' && waveCtx?.stations![waveCtx.waveIndex].id === s.id
       ? {
           fill: "red",
           color: "red",

@@ -9,17 +9,23 @@ import {
   searchTopStations,
   searchByCountry,
 } from "../utils/findFunctions";
-import { RadioWaveContext } from "../App";
+import { RadioWaveContext } from "./ProviderRadio";
+import useVisualAudio from "../hooks/useVisualAudio";
 
 const RadioComponent = () => {
   const [radioStations, setRadioStations] = useState<Station[] | undefined>();
 
-  const [audioContext, setAudioContext] = useState<AudioContext | undefined>();
+  //const [audioContext, setAudioContext] = useState<AudioContext | undefined>();
   const [value, setValue] = useState<string>(" ");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const waveCtx = useContext(RadioWaveContext);
+const {audioContext,setAudioContext} = useVisualAudio({
+  canvasRef,
+  setRadioStations
+})
 
   const searchByGenreHandler = async (genre: string) => {
+    waveCtx?.setWaveIndex(undefined);
     const stations = await searchByGenre(genre);
     setRadioStations(stations);
     waveCtx!.setStations(stations);
@@ -27,6 +33,7 @@ const RadioComponent = () => {
 
   const searchByNameHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    waveCtx?.setWaveIndex(undefined);
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
     const stations = await searchByName(name);
@@ -34,12 +41,13 @@ const RadioComponent = () => {
     waveCtx!.setStations(stations);
   };
   const searchByCountryHandler = async (country: string) => {
+    waveCtx?.setWaveIndex(undefined);
     const stations = await searchByCountry(country);
     setRadioStations(stations);
     waveCtx!.setStations(stations);
   };
 
-  useEffect(() => {
+ /*  useEffect(() => {
     if (canvasRef.current && waveCtx?.audioRef) {
       const audioCtx = new window.AudioContext(); // create customHook and add functions on util folder
       setAudioContext(audioCtx);
@@ -90,7 +98,7 @@ const RadioComponent = () => {
       setRadioStations(res);
       waveCtx?.setStations(res);
     });
-  }, [waveCtx?.audioRef]);
+  }, [waveCtx?.audioRef]); */
 
   useEffect(() => {
     const audio = waveCtx?.audioRef;
