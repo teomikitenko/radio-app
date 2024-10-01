@@ -101,7 +101,6 @@ const RadioComponent = () => {
 
     if (audio && waveCtx?.playState && radioStations?.length! > 0) {
       document.body.addEventListener("click", playHandler);
-      //audio.volume = waveCtx.volume
     }
 
     return () => {
@@ -149,17 +148,6 @@ const RadioComponent = () => {
             </button>
           ))}
         </div>
-
-        {/*      <audio
-          ref={audioRef}
-          
-          src={
-            radioStations?.length
-              ? radioStations![waveCtx!.waveIndex].urlResolved
-              : undefined
-          }
-          crossOrigin="anonymous"
-        ></audio> */}
       </div>
 
       <canvas

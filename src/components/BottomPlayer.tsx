@@ -36,18 +36,18 @@ const BottomPlayer = () => {
   };
 
   return (
-    <div className="fixed bottom-0 right-0 w-full h-20 border-t border-red-950 p-5">
+    <div className=" bg-slate-900 fixed bottom-0 right-0 w-full h-20  p-5">
       <div className="w-max mx-auto flex gap-4">
-        <StepBack onClick={decrIndex} />
+        <StepBack color="white" onClick={decrIndex} />
         {waveContext?.playState ? (
-          <Pause onClick={changePlayState} />
+          <Pause color="white" onClick={changePlayState} />
         ) : (
-          <Play onClick={changePlayState} />
+          <Play color="white" onClick={changePlayState} />
         )}
 
-        <StepForward onClick={incrIndex} />
+        <StepForward color="white" onClick={incrIndex} />
         <div className="flex gap-10">
-          <p>
+          <p className="text-slate-200 text-lg font-semibold">
             {waveContext!.stations?.length! > 0 &&
               waveContext?.stations![waveContext?.waveIndex].name}
           </p>
