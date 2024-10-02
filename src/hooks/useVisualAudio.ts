@@ -1,21 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import { RadioWaveContext } from "../components/ProviderRadio";
-import { searchTopStations } from "../utils/findFunctions";
-import { Station } from "radio-browser-api";
 
-const useVisualAudio = (obj: {
-  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
-  setRadioStations: React.Dispatch<React.SetStateAction<Station[] | undefined>>;
-}) => {
+const useVisualAudio = (canvasRef: HTMLCanvasElement | null) => {
   const [audioContext, setAudioContext] = useState<AudioContext | undefined>();
   const waveCtx = useContext(RadioWaveContext);
-  const { canvasRef, setRadioStations } = obj;
   useEffect(() => {
-    if (canvasRef.current && waveCtx?.audioRef) {
+    if (canvasRef && waveCtx?.audioRef) {
       const audioCtx = new window.AudioContext();
       setAudioContext(audioCtx);
 
-      const ctx = canvasRef.current!.getContext("2d");
+      const ctx = canvasRef.getContext("2d");
 
       let audioSource = null;
       let analyser: any = null;
@@ -27,18 +21,13 @@ const useVisualAudio = (obj: {
       analyser.fftSize = 2048;
       const bufferLength = analyser.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
-      const barWidth = canvasRef.current!.width / bufferLength + 0.2;
+      const barWidth = canvasRef.width / bufferLength + 0.2;
       let barHeight;
 
       let x = 0;
       function animate() {
         x = 0;
-        ctx!.clearRect(
-          0,
-          0,
-          canvasRef.current!.width,
-          canvasRef.current!.height
-        );
+        ctx!.clearRect(0, 0, canvasRef!.width, canvasRef!.height);
         if (analyser) {
           analyser.getByteFrequencyData(dataArray);
           for (let i = 0; i < bufferLength; i++) {
@@ -46,7 +35,7 @@ const useVisualAudio = (obj: {
             ctx!.fillStyle = "#fef9c3";
             ctx!.fillRect(
               x,
-              canvasRef.current!.height - barHeight,
+              canvasRef!.height - barHeight,
               barWidth,
               barHeight
             );
@@ -57,10 +46,6 @@ const useVisualAudio = (obj: {
       }
       animate();
     }
-    searchTopStations().then((res) => {
-      setRadioStations(res);
-      waveCtx?.setStations(res);
-    });
   }, [waveCtx?.audioRef]);
   return {
     audioContext,

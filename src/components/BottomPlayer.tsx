@@ -7,25 +7,21 @@ const BottomPlayer = () => {
   const waveContext = useContext(RadioWaveContext);
 
   const incrIndex = () => {
-    if(typeof waveContext?.waveIndex === 'number'){
+    if (typeof waveContext?.waveIndex === "number") {
       waveContext!.setWaveIndex((index) => index! + 1);
     }
-  
   };
   const decrIndex = () => {
     const length = (waveContext?.stations?.length as number) - 1;
     const currrentIndex = waveContext?.waveIndex;
-    if(typeof waveContext?.waveIndex === 'number'){
+    if (typeof waveContext?.waveIndex === "number") {
       if (currrentIndex === 0) {
         waveContext!.setWaveIndex(length);
-      } else waveContext!.setWaveIndex((index) => index! - 1); 
+      } else waveContext!.setWaveIndex((index) => index! - 1);
     }
-
   };
   const changePlayState = () => {
-    if (waveContext?.playState) {
-      waveContext?.setPlayState(false);
-    } else waveContext?.setPlayState(true);
+    waveContext?.setPlayState((play) => !play);
   };
 
   return (
@@ -39,7 +35,7 @@ const BottomPlayer = () => {
         )}
 
         <StepForward color="white" onClick={incrIndex} />
-        <PlayerComponent/>
+        <PlayerComponent />
       </div>
     </div>
   );

@@ -1,12 +1,15 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { RadioWaveContext } from "../components/ProviderRadio";
-
+import { Station } from "radio-browser-api";
+import useVisualAudio from "../hooks/useVisualAudio";
+import { searchTopStations } from "../utils/findFunctions";
 
 const PlayerComponent = () => {
   const [volume, setVolume] = useState("50");
-  const waveContext = useContext(RadioWaveContext);
+  const [currentWave, setCurrentWave] = useState<Station | undefined>();
+  const waveCtx = useContext(RadioWaveContext);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-
+  const { audioContext } = useVisualAudio(waveCtx?.canvasRef!);
 
   const setVolumeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (audioRef.current) {
@@ -16,21 +19,39 @@ const PlayerComponent = () => {
     }
   };
   useEffect(() => {
-    waveContext?.setAudioRef(audioRef.current);
+    waveCtx?.setAudioRef(audioRef.current);
+    searchTopStations().then((res) => {
+      waveCtx?.setStations(res);
+    });
   }, []);
-
-  useEffect(()=>{
-    if(typeof waveContext?.waveIndex === 'number'){
-      audioRef!.current!.src =  waveContext.stations![waveContext!.waveIndex].urlResolved
+  useEffect(() => {
+    if (typeof waveCtx?.waveIndex === "number") {
+      const currentStationUrl =
+        waveCtx.stations![waveCtx!.waveIndex].urlResolved;
+      audioRef!.current!.src = currentStationUrl;
+      setCurrentWave(waveCtx.stations![waveCtx.waveIndex]);
     }
-  },[waveContext?.waveIndex])
+  }, [waveCtx?.waveIndex]);
+
+  useEffect(() => {
+    const audio = waveCtx?.audioRef;
+    if (audio && waveCtx?.playState && currentWave) {
+      audio?.play();
+      audioContext!.resume();
+    }
+
+    return () => {
+      audio?.pause();
+    };
+  }, [currentWave, waveCtx?.playState]);
+
   return (
     <>
       <div className="flex gap-10">
         <p className="text-slate-200 text-lg font-semibold">
-          {typeof waveContext?.waveIndex === 'number' &&
-            waveContext!.stations?.length! > 0 &&
-            waveContext?.stations![waveContext?.waveIndex].name}
+          {typeof waveCtx?.waveIndex === "number" &&
+            waveCtx!.stations?.length! > 0 &&
+            waveCtx?.stations![waveCtx?.waveIndex].name}
         </p>
 
         <input
@@ -47,11 +68,7 @@ const PlayerComponent = () => {
 
       <audio
         ref={audioRef}
-        src={
-          waveContext?.waveIndex && waveContext?.stations!
-            ? waveContext.stations![waveContext!.waveIndex].urlResolved
-            : undefined
-        }
+        src={currentWave ? currentWave.urlResolved : undefined}
         crossOrigin="anonymous"
       ></audio>
     </>

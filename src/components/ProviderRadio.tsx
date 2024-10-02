@@ -9,6 +9,7 @@ const ProviderRadio = ({ children }: { children: React.ReactNode }) => {
   const [waveIndex, setWaveIndex] = useState<number | undefined>(undefined);
   const [playState, setPlayState] = useState(false);
   const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
+  const [canvasRef, setCanvasRef] = useState<HTMLCanvasElement | null>(null);
   return (
     <RadioWaveContext.Provider
       value={{
@@ -20,6 +21,8 @@ const ProviderRadio = ({ children }: { children: React.ReactNode }) => {
         setPlayState,
         audioRef,
         setAudioRef,
+        canvasRef,
+        setCanvasRef
       }}
     >
       {children}
